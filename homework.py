@@ -18,11 +18,11 @@ class InfoMessage:
         self.calories = calories
 
     def get_message(self) -> str:
-        return (f'Тип тренировки: {self.training_type};'
-                f'Длительность: {self.duration:3.f} ч.;'
-                f'Дистанция: {self.distance:3.f} км;'
-                f'Ср. скорость: {self.speed:3.f} км/ч;'
-                f'Потрачено ккал: {self.calories:3.f}.')
+        return (f'Тип тренировки: {self.training_type};',
+                f'Длительность: {self.duration: 3.f} ч.;',
+                f'Дистанция: {self.distance: 3.f} км;',
+                f'Ср. скорость: {self.speed: 3.f} км/ч;',
+                f'Потрачено ккал: {self.calories: 3.f}.')
 
 
 class Training:
@@ -45,7 +45,7 @@ class Training:
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        return self.get_distance / self.duration
+        return self.get_distance() / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -53,11 +53,11 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        training_type = type(self).__name__
+        training_type = self.__class__.__name__
         duration = self.duration
-        distance = self.get_distance
-        speed = self.get_mean_speed
-        calories = self.get_spent_calories
+        distance = self.get_distance()
+        speed = self.get_mean_speed()
+        calories = self.get_spent_calories()
         return InfoMessage(training_type, duration, distance, speed, calories)
 
 
@@ -71,8 +71,7 @@ class Running(Training):
         время_тренировки_в_минутах."""
         coeff_calorie_1 = 18
         coeff_calorie_2 = 20
-        return ((coeff_calorie_1 * self.get_mean_speed - coeff_calorie_2)
-                * self.weight / self.M_IN_KM * self.duration * 60)
+        return (coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2) * self.weight / self.M_IN_KM * (self.duration * 60)
 
 
 class SportsWalking(Training):
@@ -86,9 +85,9 @@ class SportsWalking(Training):
         coeff_calor_1 = 0.035
         coeff_calor_2 = 2
         coeff_calor_3 = 0.029
-        return ((coeff_calor_1 * self.weight + (self.get_mean_speed
-                 ** coeff_calor_2 // self.height) * coeff_calor_3
-                 * self.weight) * self.duration * 60)
+        return (coeff_calor_1 * self.weight + (self.get_mean_speed()
+                ** coeff_calor_2 // self.height)
+                * coeff_calor_3 * self.weight) * (self.duration * 60)
 
 
 class Swimming(Training):
@@ -107,7 +106,7 @@ class Swimming(Training):
     def get_spent_calories(self) -> float:
         coeff_cal_1 = 1.1
         coeff_cal_2 = 2
-        return (self.get_mean_speed + coeff_cal_1) * coeff_cal_2 * self.weight
+        return (self.get_mean_speed() + coeff_cal_1) * coeff_cal_2 * self.weight
 
 
 def read_package(workout_type: str, data: list) -> Training:
@@ -115,12 +114,15 @@ def read_package(workout_type: str, data: list) -> Training:
     workout_class_dict: Dict[str, Type] = {'SWM': Swimming,
                                            'RUN': Running,
                                            'WLK': SportsWalking, }
+
     if workout_type not in workout_class_dict.keys():
         return print(f'Ошибка: тип тренировки "{workout_type}" не обнаружен')
+
     elif len(data) != (len(signature(workout_class_dict[workout_type])
                        .parameters)):
         return print(f'Ошибка: количество параметров '
                      f'тренировки "{workout_type}" нарушено')
+
     else:
         return workout_class_dict[workout_type](*data)
 

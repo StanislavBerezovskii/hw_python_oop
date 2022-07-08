@@ -1,6 +1,4 @@
-from typing import List, Tuple
-
-CustomTuple = Tuple[str, List[int]]
+from typing import Dict, Type
 
 
 class InfoMessage:
@@ -109,7 +107,15 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    storage_data = {}
+    workout_class: Dict[str, Type] = {'SWM': Swimming,
+                                      'RUN': Running,
+                                      'WLK': SportsWalking, }
+    if workout_type not in workout_class.keys():
+        return print(f'Ошибка: тип тренировки "{workout_type}" не обнаружен')
+    elif len(data) != :
+        return print(f'Ошибка: количество параметров тренировки "{workout_type}" нарушено')
+    else:
+        return print(new_training_session = Training(workout_type, data))
 
 
 def main(training: Training) -> None:

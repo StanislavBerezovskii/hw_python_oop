@@ -1,4 +1,5 @@
 from typing import Dict, Type
+from inspect import signature
 
 
 class InfoMessage:
@@ -17,12 +18,11 @@ class InfoMessage:
         self.calories = calories
 
     def get_message(self) -> str:
-        print(f"""Тип тренировки: {self.training_type};
-Длительность: {self.duration: 3.f} ч.;
-Дистанция: {self.distance: 3.f} км;
-Ср. скорость: {self.speed: 3.f} км/ч;
-Потрачено ккал: {self.calories: 3.f}.
-""")
+        return (f'Тип тренировки: {self.training_type};'
+                f'Длительность: {self.duration: 3.f} ч.;'
+                f'Дистанция: {self.distance: 3.f} км;'
+                f'Ср. скорость: {self.speed: 3.f} км/ч;'
+                f'Потрачено ккал: {self.calories: 3.f}.')
 
 
 class Training:
@@ -53,7 +53,11 @@ class Training:
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        pass
+        return InfoMessage(self.__class__.__name__,
+                           self.duration,
+                           self.get_distance,
+                           self.get_mean_speed,
+                           self.get_spent_calories)
 
 
 class Running(Training):
@@ -107,20 +111,23 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    workout_class: Dict[str, Type] = {'SWM': Swimming,
-                                      'RUN': Running,
-                                      'WLK': SportsWalking, }
-    if workout_type not in workout_class.keys():
+    workout_class_dict: Dict[str, Type] = {'SWM': Swimming,
+                                           'RUN': Running,
+                                           'WLK': SportsWalking, }
+    if workout_type not in workout_class_dict.keys():
         return print(f'Ошибка: тип тренировки "{workout_type}" не обнаружен')
-    elif len(data) != :
-        return print(f'Ошибка: количество параметров тренировки "{workout_type}" нарушено')
+    elif len(data) != (len(signature(workout_class_dict[workout_type])
+                       .parameters)):
+        return print(f'Ошибка: количество параметров '
+                     f'тренировки "{workout_type}" нарушено')
     else:
-        return print(new_training_session = Training(workout_type, data))
+        return workout_class_dict[workout_type](*data)
 
 
 def main(training: Training) -> None:
     """Главная функция."""
-    pass
+    info = training.show_training_info()
+    print(info.get_message())
 
 
 if __name__ == '__main__':

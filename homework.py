@@ -71,7 +71,8 @@ class Running(Training):
         время_тренировки_в_минутах."""
         coeff_calorie_1 = 18
         coeff_calorie_2 = 20
-        return (coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2) * self.weight / self.M_IN_KM * (self.duration * 60)
+        return ((coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2)
+                * self.weight / self.M_IN_KM * (self.duration * 60))
 
 
 class SportsWalking(Training):
@@ -133,14 +134,14 @@ def read_package(workout_type: str, data: list) -> Training:
 
 def main(training: Training) -> None:
     """Главная функция."""
-    info = training.show_training_info()
-    print(info.get_message())
+    info = training.show_training_info().get_message()
+    print(info)
 
 
 if __name__ == '__main__':
     packages = [
         ('SWM', [720, 1, 80, 25, 40]),
-        ('RUN', [15000, 1, 75]),
+        ('RUN', [1206, 12, 6]),
         ('WLK', [9000, 1, 75, 180]),
     ]
 
